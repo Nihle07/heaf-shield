@@ -11,7 +11,7 @@ app = FastAPI(
 )
 
 # Hugging Face Üzerindeki Model Yolu
-MODEL_PATH = "nihlittle/saved_bertturk_phishing_model"
+MODEL_PATH = "nilittle/saved_bertturk_phishing_modell"
 print("Model ve Tokenizer Hugging Face üzerinden yükleniyor...")
 tokenizer = BertTokenizer.from_pretrained(MODEL_PATH)
 model = BertForSequenceClassification.from_pretrained(MODEL_PATH)
