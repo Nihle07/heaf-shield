@@ -10,9 +10,9 @@ app = FastAPI(
     version="4.0"
 )
 
-# Eğittiğimiz BERTurk Modelini ve Tokenizer'ı Yükleme
-MODEL_PATH = "./saved_bertturk_phishing_model"
-print("Model ve Tokenizer yükleniyor...")
+# Hugging Face Üzerindeki Model Yolu
+MODEL_PATH = "nihlittle/saved_bertturk_phishing_model"
+print("Model ve Tokenizer Hugging Face üzerinden yükleniyor...")
 tokenizer = BertTokenizer.from_pretrained(MODEL_PATH)
 model = BertForSequenceClassification.from_pretrained(MODEL_PATH)
 model.eval()
@@ -56,7 +56,7 @@ def fusion_attention_gated(p_bert, xai_score, has_url):
     else:
         alpha = 0.5  # Dengeli durum
         
-    dynamic_score = (alpha * p_bert) + ((1 - alpha) * xai_score)  # Çarpma işareti eklendi
+    dynamic_score = (alpha * p_bert) + ((1 - alpha) * xai_score)
     decision = "DOLANDIRICILIK" if dynamic_score > 0.4 else "GÜVENLİ"
     
     return dynamic_score, decision, alpha
