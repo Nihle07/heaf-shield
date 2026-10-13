@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 import torch
-from transformers import BertTokenizer, BertForSequenceClassification
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import re
 
 app = FastAPI(
@@ -13,8 +13,13 @@ app = FastAPI(
 # Hugging Face Üzerindeki Model Yolu
 MODEL_PATH = "nilittle/saved_bertturk_phishing_model"
 print("Model ve Tokenizer Hugging Face üzerinden yükleniyor...")
-tokenizer = BertTokenizer.from_pretrained(MODEL_PATH)
-model = BertForSequenceClassification.from_pretrained(MODEL_PATH)
+
+# RAM optimizasyonu ile yükleme
+tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
+model = AutoModelForSequenceClassification.from_pretrained(
+    MODEL_PATH, 
+    low_cpu_mem_usage=True
+)
 model.eval()
 print("Model başarıyla yüklendi!")
 
@@ -46,7 +51,7 @@ def extract_xai_manipulation_score(text: str):
     }
 
 # ==========================================
-# 4. DİNAMİK KAPILI FÜZYON (Attention-Gated Fusion)
+# Dinamik Kapılı Füzyon (Attention-Gated Fusion)
 # ==========================================
 def fusion_attention_gated(p_bert, xai_score, has_url):
     if xai_score > 0.5:
@@ -104,12 +109,12 @@ def home():
     <html lang="tr">
     <head>
         <meta charset="UTF-8">
-        <title>MM-HEAF Dinamik Füzyon Sistemi</title>
+        <title>HEAF Shield - Dinamik Füzyon Sistemi</title>
         <script src="https://cdn.tailwindcss.com"></script>
     </head>
     <body class="bg-gray-900 text-gray-100 min-h-screen flex flex-col items-center justify-center p-4">
         <div class="max-w-2xl w-full bg-gray-800 rounded-xl shadow-2xl p-8 border border-gray-700">
-            <h1 class="text-3xl font-bold text-center mb-2 text-indigo-400">🛡️ MM-HEAF Dinamik Füzyon Paneli</h1>
+            <h1 class="text-3xl font-bold text-center mb-2 text-indigo-400">🛡️ HEAF Shield Dinamik Füzyon Paneli</h1>
             <p class="text-gray-400 text-center mb-6">Attention-Gated XAI ve BERTurk Akıllı Karar Birleştirme</p>
             
             <div class="mb-4">
@@ -134,7 +139,7 @@ def home():
                         <p id="xaiScore" class="text-2xl font-bold text-yellow-400">-</p>
                     </div>
                     <div class="bg-gray-900 p-4 rounded-lg border border-gray-700 text-center">
-                        <p class="text-xs text-gray-400 mb-1">MM-HEAF Nihai Skor</p>
+                        <p class="text-xs text-gray-400 mb-1">HEAF Shield Nihai Skor</p>
                         <p id="finalScore" class="text-2xl font-bold text-indigo-400">-</p>
                     </div>
                 </div>
